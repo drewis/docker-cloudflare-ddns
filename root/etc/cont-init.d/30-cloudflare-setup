@@ -69,4 +69,4 @@ fi
 
 echo "DNS Record: $CFDnsRecordName ($CFDnsRecordId)"
 echo "CF_ZONE_ID=\"$CFZoneId\" CF_RECORD_ID=\"$CFDnsRecordId\" CF_RECORD_NAME=\"$CFDnsRecordName\"" > /config/cloudflare.conf
-echo "*/5	*	*	*	*	/etc/cont-init.d/50-ddns" > /var/spool/cron/crontabs/root
+echo "10	*/2	*	*	*	/etc/cont-init.d/50-ddns" > /var/spool/cron/crontabs/root
