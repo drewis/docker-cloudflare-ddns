@@ -4,17 +4,14 @@ cloudflare() {
   curl -sSL \
     -H "Accept: application/json" \
     -H "Content-Type: application/json" \
-    -H "X-Auth-Email: $EMAIL" \
-    -H "X-Auth-Key: $API_KEY" \
+    -H "Authorization: Bearer $API_KEY" \
     "$@"
 }
 
 getPublicIpAddress() {
   if [ "$RRTYPE" == "A" ]; then
-    # try dns method first.
-    IP_ADDRESS=$(dig +short @resolver1.opendns.com myip.opendns.com A)
-
-    # if dns method fails, use http method
+    # use http method
+    IP_ADDRESS=$(curl -sf4 https://ipconfig.co)
     if [ "$IP_ADDRESS" = "" ]; then
       IP_ADDRESS=$(curl -sf4 https://ipinfo.io | jq -r '.ip')
     fi
@@ -42,11 +39,11 @@ getDnsRecordName() {
 }
 
 verifyToken() {
-  cloudflare -o /dev/null -w "%{http_code}" "$CF_API"/user
+  cloudflare -o /dev/null -w "%{http_code}" "$CF_API"/user/tokens/verify
 }
 
 getZoneId() {
-  cloudflare "$CF_API/zones?name=$ZONE" | jq -r '.result[0].id'
+  echo $ZONEID
 }
 
 getDnsRecordId() {
